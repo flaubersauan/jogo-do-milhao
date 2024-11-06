@@ -1,6 +1,6 @@
 
 import random
-print(  '\033[32m' '=' * 15,'Jogo do Milhão', '=' * 15, '\033[0m')
+print(  '\033[32m' '=' * 15,'Jogo do milhão', '=' * 15, '\033[0m')
 # Lista de perguntas, organizadas por níveis de dificuldade
 perguntas = {
     'fácil': [
