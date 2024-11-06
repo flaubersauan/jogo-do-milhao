@@ -1,4 +1,4 @@
-
+import os
 import random
 print(  '\033[32m' '=' * 15,'Jogo do Milhão', '=' * 15, '\033[0m')
 # Lista de perguntas, organizadas por níveis de dificuldade
@@ -322,6 +322,42 @@ def alternar_turno(turno, jogador1, jogador2):
     '''
     return jogador1 if turno == jogador2 else jogador2
 
+
+def salvar_ranking(jogador, pontuacao, arquivo='ranking.txt'):
+    '''Salva o nome e a pontuação do jogador em um arquivo de ranking.
+
+    Parâmetros:
+    - jogador (str): O nome do jogador.
+    - pontuacao (float): A pontuação final do jogador.
+    - arquivo (str): Nome do arquivo de ranking onde as informações serão armazenadas.
+    '''
+    with open(arquivo, 'a') as file:
+        file.write(f"{jogador} {pontuacao}\n")
+
+def exibir_ranking(arquivo='ranking.txt'):
+    '''Exibe o ranking de jogadores com suas pontuações armazenadas no arquivo de ranking.
+
+    Parâmetros:
+    - arquivo (str): Nome do arquivo de ranking onde as informações são armazenadas.
+
+    Funcionalidade:
+    - Lê o arquivo de ranking e exibe os jogadores ordenados por pontuação, do maior para o menor.
+    '''
+    if os.path.exists(arquivo):
+        with open(arquivo, 'r') as file:
+            ranking = []
+            for linha in file:
+                nome, pontuacao = linha.rsplit(' ', 1)
+                ranking.append((nome, float(pontuacao)))
+            ranking.sort(key=lambda x: x[1], reverse=True)  # Ordena pelo maior valor de pontuação
+
+            print("\n\033[32m===== Ranking =====\033[0m")
+            for pos, (nome, pontuacao) in enumerate(ranking, start=1):
+                print(f"{pos}. {nome} - R${pontuacao:.2f}")
+    else:
+        print("Ainda não há um ranking registrado.")
+
+
 def exibir_resultado_final(jogador1, jogador2, jogadores):
     '''Exibe o resultado final do jogo, determinando o vencedor e mostrando os prêmios acumulados.
 
@@ -344,6 +380,10 @@ def exibir_resultado_final(jogador1, jogador2, jogadores):
     print("Resultados finais:")
     print(f"{jogador1}: \033[32mR${jogadores[jogador1]:.2f}\033[0m")
     print(f"{jogador2}: \033R${jogadores[jogador2]:.2f}\033[0m")
+    salvar_ranking(jogador1, jogadores[jogador1])
+    salvar_ranking(jogador2, jogadores[jogador2])
+    exibir_ranking()
+
 
 def jogo_do_milhao(jogador1, jogador2, perguntas, premios):
     '''Controla o fluxo do jogo de perguntas e respostas, onde dois jogadores competem por prêmios em dinheiro.
@@ -386,6 +426,7 @@ def jogo_do_milhao(jogador1, jogador2, perguntas, premios):
             turno = alternar_turno(turno, jogador1, jogador2)  # Só altera o turno se passar a vez
 
     exibir_resultado_final(jogador1, jogador2, jogadores)
+
 
 # Lista de prêmios
 premios = [1000, 5000, 50000, 100000,150000, 350000, 450000, 500000, 750000, 1000000]
